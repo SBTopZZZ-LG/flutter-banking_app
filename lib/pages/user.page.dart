@@ -50,213 +50,234 @@ class UserPage extends StatelessWidget {
     final user = Provider.of<User>(context); // Listen
 
     return Scaffold(
-      backgroundColor: lighten(Theme.of(context).primaryColorLight),
-      appBar: AppBar(
-        title: Text(
-          "Banking",
-          style: TextStyle(color: Theme.of(context).primaryColorDark),
-        ),
-        centerTitle: true,
-        shadowColor: Colors.black.withOpacity(0.2),
-        backgroundColor:
-            lighten(Theme.of(context).primaryColorLight, factor: 0.1),
-      ),
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 45,
-                backgroundColor: colours[colourIndex]["colour"],
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    user.getAvatar,
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: colours[colourIndex]["textColour"],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  user.name,
-                  style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColorDark),
-                ),
-              ),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  user.email,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color:
-                        darken(Theme.of(context).primaryColorDark, factor: 0.3),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 13,
-                  ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      "\$ ${user.balance}",
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(15),
-                    splashColor: colours[colourIndex]["colour"],
-                    hoverColor: Colors.transparent,
-                    onTap: () =>
-                        displayTransferOverlay(context, (int id, int amount) {
-                      users.get[id]!.balance += amount;
-                      users.get[id]!.saveAndRefresh();
-
-                      user.balance -= amount;
-                      user.saveAndRefresh();
-
-                      Transfer(
-                        id: Transfer.safeId++,
-                        from: user.id,
-                        to: id,
-                        amount: amount,
-                        datetime: DateTime.now().millisecondsSinceEpoch,
-                      ).saveAndRefresh();
-                    }),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        border: Border.all(
-                          width: 1,
-                          color: darken(Theme.of(context).primaryColorDark),
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.money,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Transfer money",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColorDark,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    width: double.infinity,
-                    height: 0.5,
-                    color: Theme.of(context).primaryColorDark,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "User Details",
+      backgroundColor:
+          MediaQuery.of(context).platformBrightness == Brightness.dark
+              ? lighten(Theme.of(context).primaryColorLight, factor: 0.15)
+              : darken(Theme.of(context).primaryColorLight, factor: 0.05),
+      // appBar: AppBar(
+      //   title: Text(
+      //     "Banking",
+      //     style: TextStyle(color: Theme.of(context).primaryColorDark),
+      //   ),
+      //   centerTitle: true,
+      //   shadowColor: Colors.black.withOpacity(0.2),
+      //   backgroundColor:
+      //       lighten(Theme.of(context).primaryColorLight, factor: 0.1),
+      // ),
+      body: Stack(
+        children: [
+          Center(
+            child: Icon(
+              Icons.monetization_on,
+              size: 125,
+              color: MediaQuery.of(context).platformBrightness ==
+                      Brightness.light
+                  ? darken(Theme.of(context).primaryColorLight, factor: 0.15)
+                  : lighten(Theme.of(context).primaryColorLight),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: MediaQuery.of(context).padding.top),
+                Hero(
+                  tag: "avatar-${user.id}",
+                  child: CircleAvatar(
+                    radius: 45,
+                    backgroundColor: colours[colourIndex]["colour"],
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        user.getAvatar,
                         style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: colours[colourIndex]["textColour"],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    user.name,
+                    style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColorDark),
+                  ),
+                ),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    user.email,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: darken(Theme.of(context).primaryColorDark,
+                          factor: 0.3),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.green,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 6,
+                      horizontal: 13,
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "\$ ${user.balance}",
+                        style: const TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColorDark,
+                          color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 15),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Phone : ",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: darken(Theme.of(context).primaryColorDark,
-                                  factor: 0.1),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      splashColor: colours[colourIndex]["colour"],
+                      hoverColor: Colors.transparent,
+                      onTap: () =>
+                          displayTransferOverlay(context, (int id, int amount) {
+                        users.get[id]!.balance += amount;
+                        users.get[id]!.saveAndRefresh();
+
+                        user.balance -= amount;
+                        user.saveAndRefresh();
+
+                        Transfer(
+                          id: Transfer.safeId++,
+                          from: user.id,
+                          to: id,
+                          amount: amount,
+                          datetime: DateTime.now().millisecondsSinceEpoch,
+                        ).saveAndRefresh();
+                      }),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(
+                            width: 1,
+                            color: darken(Theme.of(context).primaryColorDark),
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.money,
+                                  color: Theme.of(context).primaryColorDark,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  "Transfer money",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).primaryColorDark,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Text(
-                            user.phone,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: darken(Theme.of(context).primaryColorDark,
-                                  factor: 0.05),
-                            ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      height: 0.5,
+                      color: Theme.of(context).primaryColorDark,
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "User Details",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColorDark,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        "Occupation : ",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: darken(Theme.of(context).primaryColorDark,
-                                factor: 0.1)),
-                      ),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          user.occupation,
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Phone : ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: darken(
+                                    Theme.of(context).primaryColorDark,
+                                    factor: 0.1),
+                              ),
+                            ),
+                            Text(
+                              user.phone,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: darken(
+                                    Theme.of(context).primaryColorDark,
+                                    factor: 0.05),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Occupation : ",
                           style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
                               color: darken(Theme.of(context).primaryColorDark,
-                                  factor: 0.05)),
+                                  factor: 0.1)),
                         ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ],
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            user.occupation,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: darken(
+                                    Theme.of(context).primaryColorDark,
+                                    factor: 0.05)),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -303,7 +324,7 @@ class TransferModalSheet extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(20),
-      color: Theme.of(context).primaryColorLight,
+      color: lighten(Theme.of(context).primaryColorLight),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -326,7 +347,10 @@ class TransferModalSheet extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           DropdownButton(
-            dropdownColor: Theme.of(context).primaryColorLight,
+            dropdownColor:
+                MediaQuery.of(context).platformBrightness == Brightness.dark
+                    ? lighten(Theme.of(context).primaryColorLight, factor: 0.3)
+                    : darken(Theme.of(context).primaryColorLight, factor: 0.1),
             alignment: Alignment.center,
             elevation: 0,
             underline: const Opacity(
@@ -479,13 +503,9 @@ class TransferModalSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                "→",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColorDark,
-                ),
+              const Icon(
+                Icons.arrow_right,
+                size: 40,
               ),
               const SizedBox(width: 10),
               ClipRRect(

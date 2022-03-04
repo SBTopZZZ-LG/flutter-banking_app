@@ -5,6 +5,7 @@ import './pages/home.page.dart';
 import './models/user.dart';
 import './models/transfer.dart';
 import './utils/sqlite.dart';
+import './configs/colours.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,7 @@ void main() async {
         ),
       ),
       darkTheme: ThemeData(
-        primaryColorLight: Colors.black87,
+        primaryColorLight: lighten(Colors.black, factor: 0.05),
         primaryColorDark: Colors.white,
         fontFamily: GoogleFonts.raleway().fontFamily,
         iconTheme: const IconThemeData(

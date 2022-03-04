@@ -60,14 +60,14 @@ final colours = [
 ];
 
 Color lighten(Color color, {double factor = 0.2}) => Color.fromARGB(
-      color.alpha + ((255 - color.alpha) * factor).toInt(),
+      color.alpha,
       color.red + ((255 - color.red) * factor).toInt(),
       color.green + ((255 - color.green) * factor).toInt(),
       color.blue + ((255 - color.blue) * factor).toInt(),
     );
 
 Color darken(Color color, {double factor = 0.2}) => Color.fromARGB(
-      (color.alpha * (1 - factor)).toInt(),
+      color.alpha,
       (color.red * (1 - factor)).toInt(),
       (color.green * (1 - factor)).toInt(),
       (color.blue * (1 - factor)).toInt(),
