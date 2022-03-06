@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class DatabaseModel {
+abstract class DatabaseModel extends ChangeNotifier {
   final int id;
 
   DatabaseModel({required this.id});
@@ -8,9 +8,10 @@ abstract class DatabaseModel {
   Future<void> save();
   Future<void> refresh();
 
-  void saveAndRefresh() async {
+  Future<void> saveAndRefresh() async {
     await save();
     await refresh();
+    notifyListeners();
   }
 
   Map<String, dynamic> toJson();

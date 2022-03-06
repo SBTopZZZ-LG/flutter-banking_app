@@ -4,7 +4,7 @@ import './database.model.dart';
 import './user.dart';
 import '../utils/sqlite.dart';
 
-class Transfer extends DatabaseModel with ChangeNotifier {
+class Transfer extends DatabaseModel {
   static int safeId = 0;
   int from;
   int to;

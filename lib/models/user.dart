@@ -4,7 +4,7 @@ import './database.model.dart';
 
 import '../utils/sqlite.dart';
 
-class User extends DatabaseModel with ChangeNotifier {
+class User extends DatabaseModel {
   String name;
   String email;
   int balance;
@@ -49,12 +49,6 @@ class User extends DatabaseModel with ChangeNotifier {
     } else {
       await Db.get!.update("users", toJson(), where: "id = $id");
     }
-  }
-
-  @override
-  void saveAndRefresh() {
-    super.saveAndRefresh();
-    notifyListeners();
   }
 
   @override
